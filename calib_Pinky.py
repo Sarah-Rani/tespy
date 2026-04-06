@@ -23,12 +23,9 @@ def calib_sk():
 	
 	calib["R_FB"] = np.array([5000.00]*16)
 	
-	calib["V_FB_MAX"] =  2*np.array([0.500, 0.500, 0.500, 0.500,
-							0.500, 0.500, 0.500, 0.500,
-							0.500, 0.500, 0.500, 0.500,
-							0.500, 0.500, 0.500, 0.500])
+	calib["V_FB_MAX"] =  2*np.array([0.75]*16) #V (I think??)
 	
-	calib["BITS_BIAS"] = 16   # number of bits in TES bias DAC
+	calib["BITS_BIAS"] = 16   # number of bits in TES bias DAC; do we expect this to be the same as SK?
 	calib["BITS_FB"] = 14   # number of bits in FB DAC
 	
 	# Bias ADC bins => bias current (Amps)
