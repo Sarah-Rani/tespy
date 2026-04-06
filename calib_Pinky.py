@@ -4,7 +4,7 @@ calib file using for shortkeck analysis. changed from matlab version calib.m
 '''
 import numpy as np
 
-def calib_sk():
+def calib_pinky():
 	
 	calib = {}
 	calib["R_SH"] = 0.0030    #Ohms (at 4K, different chip) #same as SK
