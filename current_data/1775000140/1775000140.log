@@ -1,0 +1,140 @@
+Auto tuning run started Tue Mar 31 23:35:40 2026 UTC
+Dir:  /data/cryo/20260331
+Name: 1775000140
+
+Executing mce_check_init -q
+Exit Status: 0
+
+Executing mce_make_config /data/cryo/20260331/experiment.cfg /data/cryo/20260331/config_mce_auto_setup_20260331
+Removing existing '/data/cryo/20260331/config_mce_auto_setup_20260331'
+Exit Status: 0
+
+Executing /data/cryo/20260331/config_mce_auto_setup_20260331
+awk: cannot open /usr/mce/config/array_list (No such file or directory)
+Exit Status: 0
+
+Executing ramp_sa_fb 1775000140/1775000140_RCs_ssa s 0
+count=120 step=100 ratio=0.750000
+Now running a sweep of sa_fb (0 to 120 *100 ) for each of 1 bias value(s)
+/usr/mce/mce_script/script/ramp_sa_fb elapsed time:  2  s
+Exit Status: 0
+
+Executing mce_acq_register 1775000140 tune_ramp /data/cryo/20260331/1775000140/1775000140_RCs_ssa 120 
+Exit Status: 0
+
+Executing mce_make_config /data/cryo/20260331/experiment.cfg /data/cryo/20260331/config_mce_auto_setup_20260331
+Removing existing '/data/cryo/20260331/config_mce_auto_setup_20260331'
+Exit Status: 0
+
+Executing /data/cryo/20260331/config_mce_auto_setup_20260331
+awk: cannot open /usr/mce/config/array_list (No such file or directory)
+Exit Status: 0
+
+Executing mce_make_config /data/cryo/20260331/experiment.cfg /data/cryo/20260331/config_mce_auto_setup_20260331
+Removing existing '/data/cryo/20260331/config_mce_auto_setup_20260331'
+Exit Status: 0
+
+Executing /data/cryo/20260331/config_mce_auto_setup_20260331
+awk: cannot open /usr/mce/config/array_list (No such file or directory)
+Exit Status: 0
+
+Executing mce_make_config /data/cryo/20260331/experiment.cfg /data/cryo/20260331/config_mce_auto_setup_20260331
+Removing existing '/data/cryo/20260331/config_mce_auto_setup_20260331'
+Exit Status: 0
+
+Executing /data/cryo/20260331/config_mce_auto_setup_20260331
+awk: cannot open /usr/mce/config/array_list (No such file or directory)
+Exit Status: 0
+
+Executing /usr/mce/bin/sq2servo -p 50 -E1 s 1775000140/1775000143_RCs_sq2servo
+Identified bias card with fast-SQ2 support.
+This script did not apply SQ2 bias, you may need to turn biases off manually!
+sq2servo: elapsed time is 16.000000s 
+Exit Status: 0
+
+Executing mce_acq_register 1775000143 tune_sq2_servo /data/cryo/20260331/1775000140/1775000143_RCs_sq2servo 1600 
+Exit Status: 0
+
+Executing mce_make_config /data/cryo/20260331/experiment.cfg /data/cryo/20260331/config_mce_auto_setup_20260331
+Removing existing '/data/cryo/20260331/config_mce_auto_setup_20260331'
+Exit Status: 0
+
+Executing /data/cryo/20260331/config_mce_auto_setup_20260331
+awk: cannot open /usr/mce/config/array_list (No such file or directory)
+Exit Status: 0
+
+Executing mce_make_config /data/cryo/20260331/experiment.cfg /data/cryo/20260331/config_mce_auto_setup_20260331
+Removing existing '/data/cryo/20260331/config_mce_auto_setup_20260331'
+Exit Status: 0
+
+Executing /data/cryo/20260331/config_mce_auto_setup_20260331
+awk: cannot open /usr/mce/config/array_list (No such file or directory)
+Exit Status: 0
+
+Executing /usr/mce/bin/sq1servo_all -p 50 -p 50 -E1 s 1775000140/1775000160_RCs_sq1servo
+Card bits=0x3, column count=16 num_rows_reported=33
+Identified bias card with fast-SQ2 support.
+No SQ1 bias is applied!
+sq1servo: elapsed time is 4.000000s 
+Exit Status: 0
+
+Executing mce_acq_register 1775000160 tune_sq1_servo /data/cryo/20260331/1775000140/1775000160_RCs_sq1servo 320 
+Exit Status: 0
+
+Executing mce_make_config /data/cryo/20260331/experiment.cfg /data/cryo/20260331/config_mce_auto_setup_20260331
+Removing existing '/data/cryo/20260331/config_mce_auto_setup_20260331'
+Exit Status: 0
+
+Executing /data/cryo/20260331/config_mce_auto_setup_20260331
+awk: cannot open /usr/mce/config/array_list (No such file or directory)
+Exit Status: 0
+
+Executing mce_make_config /data/cryo/20260331/experiment.cfg /data/cryo/20260331/config_mce_auto_setup_20260331
+Removing existing '/data/cryo/20260331/config_mce_auto_setup_20260331'
+Exit Status: 0
+
+Executing /data/cryo/20260331/config_mce_auto_setup_20260331
+awk: cannot open /usr/mce/config/array_list (No such file or directory)
+Exit Status: 0
+
+Executing ramp_sq1_fb 1775000140/1775000170_RCs_sq1ramp s
+0 x 16
+/usr/mce/mce_script/script/ramp_sq1_fb elapsed time:  0
+Exit Status: 0
+
+Executing mce_acq_register 1775000170 tune_ramp /data/cryo/20260331/1775000140/1775000170_RCs_sq1ramp 121 
+Exit Status: 0
+
+Executing mce_make_config /data/cryo/20260331/experiment.cfg /data/cryo/20260331/config_mce_auto_setup_20260331
+Removing existing '/data/cryo/20260331/config_mce_auto_setup_20260331'
+Exit Status: 0
+
+Executing /data/cryo/20260331/config_mce_auto_setup_20260331
+awk: cannot open /usr/mce/config/array_list (No such file or directory)
+Exit Status: 0
+plot_reg failed because plot_out = None
+
+Executing mce_make_config /data/cryo/20260331/experiment.cfg /data/cryo/20260331/config_mce_auto_setup_20260331
+Removing existing '/data/cryo/20260331/config_mce_auto_setup_20260331'
+Exit Status: 0
+
+Executing /data/cryo/20260331/config_mce_auto_setup_20260331
+awk: cannot open /usr/mce/config/array_list (No such file or directory)
+Exit Status: 0
+
+Executing ramp_sq1_fb 1775000140/1775000175_RCs_sq1rampc s
+0 x 16
+/usr/mce/mce_script/script/ramp_sq1_fb elapsed time:  0
+Exit Status: 0
+
+Executing mce_acq_register 1775000175 tune_ramp /data/cryo/20260331/1775000140/1775000175_RCs_sq1rampc 121 
+Exit Status: 0
+plot_reg failed because plot_out = None
+
+Executing mce_make_config /data/cryo/20260331/experiment.cfg /data/cryo/20260331/config_mce_auto_setup_20260331
+Removing existing '/data/cryo/20260331/config_mce_auto_setup_20260331'
+Exit Status: 0
+
+Executing /data/cryo/20260331/config_mce_auto_setup_20260331
+awk: cannot open /usr/mce/config/array_list (No such file or directory)
+Exit Status: 0

@@ -42,9 +42,9 @@ class opts:
 templists = gettemplists()
 templist = templists[opts.date]
 
-if opts.testbed in ['SK','sk']:
-	import calib_SK
-	calib = calib_SK.calib_sk()
+if opts.testbed in ['Pinky','pinky']:
+	import calib_Pinky
+	calib = calib_Pinky.calib_pinky()
 	if opts.freq == 40:
 		import ba40_ModuleMapping as minfo 
 	elif opts.freq == 30:
@@ -90,7 +90,11 @@ def main():
 		#===================================#
 		# loading data/making output dirs
 		#===================================#
-		filename = 'LC_G_FPU_'+str(temp)+'mK_datamode1_run1'
+		filename = ('LC_dark_alpha_fine_sk_FPU'+str(temp)+'mK_datamode1_source'+str(temp)+'mK' + 
+			'/LC_dark_alpha_fine_sk_FPU'+str(temp)+'mK_datamode1_source'+str(temp)) #for 04/26 pinky data
+
+		#correct name for 20260414:
+		#/LC_dark_alpha_fine_sk_FPU106mK_datamode1_source106mK/LC_dark_alpha_fine_sk_FPU106mK_datamode1_source106mK.run
 		if not os.path.isdir(out_path_main):
 			os.makedirs(out_path_main)
 		out_path = out_path_main + filename + '/'
