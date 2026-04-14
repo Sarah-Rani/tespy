@@ -1,6 +1,6 @@
 '''
-calib file using for shortkeck analysis. changed from matlab version calib.m
-05/08/2018
+calib file for pinky analysis. updated by SRG 14/04/2026. R_WIRE can be a range of values, 
+R_BIAS needs to be pinned down, but these values give SC slope of around 1.
 '''
 import numpy as np
 
