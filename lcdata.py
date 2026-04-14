@@ -1,7 +1,7 @@
 import numpy as np
 import mce_data
 import sys,os
-sys.path.insert(0, "/home/cheng/analysis/ploting")
+sys.path.insert(0, "/Users/sarahgates/Downloads/current_data")
 import easyplots as eps
 import matplotlib.pyplot as plt
 import pylab as pl
@@ -37,35 +37,35 @@ def fixfluxramp(ites):
 # output biascalib, fbcalib with shift, rnti
 def get_LC_calibed(bias, fb, calib, fitrange = None, row = None, col = None, out_path = None, flip = 1, DCflag='RN'):
 
-        bias = bias/calib["BIAS_CAL"][0];
-        fb   = fb/calib["FB_CAL"][0];
+	bias = bias/calib["BIAS_CAL"][0];
+	fb   = fb/calib["FB_CAL"][0];
 
 	if not fitrange:
 		fitrange = get_default_fitrange()
 
-	fbcalib_ = -1*flip*fb*calib["FB_CAL"][0]
-	biascalib_ = bias*calib["BIAS_CAL"][0]
-	
-        # Fit
-        # fit range
-        bias_fit = np.array([bias[i] for i in range((len(bias))) if (bias[i]>fitrange["rnti_low"] and bias[i]<fitrange["rnti_hgh"])])
-        fb_fit   = np.array([fb[i] for i in range((len(fb))) if (bias[i]>fitrange["rnti_low"] and bias[i]<fitrange["rnti_hgh"])])
-        # fit with poly1
-        ceff  = np.polyfit(bias_fit*calib["BIAS_CAL"][0],-1*flip*fb_fit*calib["FB_CAL"][0],1)
-        ffunc = np.poly1d(ceff)
-        # normal resistance
-        RR = calib["R_SH"]*(1.00/ceff[0]-1.00) #Ohms
-        if RR<10e-3 or RR>1000e-3:
-                RR = float('nan')
+		fbcalib_ = -1*flip*fb*calib["FB_CAL"][0]
+		biascalib_ = bias*calib["BIAS_CAL"][0]
+
+		# Fit
+		# fit range
+		bias_fit = np.array([bias[i] for i in range((len(bias))) if (bias[i]>fitrange["rnti_low"] and bias[i]<fitrange["rnti_hgh"])])
+		fb_fit   = np.array([fb[i] for i in range((len(fb))) if (bias[i]>fitrange["rnti_low"] and bias[i]<fitrange["rnti_hgh"])])
+		# fit with poly1
+		ceff  = np.polyfit(bias_fit*calib["BIAS_CAL"][0],-1*flip*fb_fit*calib["FB_CAL"][0],1)
+		ffunc = np.poly1d(ceff)
+		# normal resistance
+		RR = calib["R_SH"]*(1.00/ceff[0]-1.00) #Ohms
+		if RR<10e-3 or RR>1000e-3:
+			RR = float('nan')
 	# fit sc
 	if fitrange["sc_low"] is None:
-        	fitrange["sc_low"] = min(bias)
+		fitrange["sc_low"] = min(bias)
 		fitrange["sc_hgh"] = max(bias)
-	bias_sc  = np.array([bias[i] for i in range((len(bias))) if (bias[i]>fitrange["sc_low"] and bias[i]<fitrange["sc_hgh"])])
-        fb_sc    = np.array([fb[i] for i in range((len(fb))) if (bias[i]>fitrange["sc_low"] and bias[i]<fitrange["sc_hgh"])])
-        # fit sc with polfb1
-        ceff_sc  = np.polyfit(bias_sc*calib["BIAS_CAL"][0],-1*flip*fb_sc*calib["FB_CAL"][0],1)
-        ffunc_sc = np.poly1d(ceff_sc)
+		bias_sc  = np.array([bias[i] for i in range((len(bias))) if (bias[i]>fitrange["sc_low"] and bias[i]<fitrange["sc_hgh"])])
+		fb_sc    = np.array([fb[i] for i in range((len(fb))) if (bias[i]>fitrange["sc_low"] and bias[i]<fitrange["sc_hgh"])])
+		# fit sc with polfb1
+		ceff_sc  = np.polyfit(bias_sc*calib["BIAS_CAL"][0],-1*flip*fb_sc*calib["FB_CAL"][0],1)
+		ffunc_sc = np.poly1d(ceff_sc)
 
 	if DCflag == 'RN':
 		shift_h  = ffunc(0)
@@ -78,22 +78,21 @@ def get_LC_calibed(bias, fb, calib, fitrange = None, row = None, col = None, out
 	else:
 		print("DCflag = ['RN', 'SC', 0, -1], otherwise use RN")
 		shift_h  = ffunc(0)
-        fbcalib = fbcalib_ - shift_h
-	biascalib = biascalib_
-        rntifit  = ffunc(biascalib) - shift_h
+		fbcalib = fbcalib_ - shift_h
+		biascalib = biascalib_
+		rntifit  = ffunc(biascalib) - shift_h
 
 	if out_path and row+1 and col+1:
-                fig,ax = eps.presetting(7.4,6,lx="Ib [uA]",ly="Ites [uA]")
-                pl.suptitle('Row %02d'%row + ' Col %02d'%col)
-                pl.plot(biascalib*1e6,fbcalib*1e6, biascalib*1e6, rntifit*1e6)
-                pl.xlim(min(biascalib)*1e6,max(biascalib)*1e6)
-                
-                pl.text(0.6, 0.85, 'R = %.2f Ohms'%RR, fontsize=15, transform=ax.transAxes)
-                pl.text(0.6, 0.75, 'SC slope = %.2f'%ceff_sc[0], fontsize=15, transform=ax.transAxes)
+				fig,ax = eps.presetting(7.4,6,lx="Ib [uA]",ly="Ites [uA]")
+				pl.suptitle('Row %02d'%row + ' Col %02d'%col)
+				pl.plot(biascalib*1e6,fbcalib*1e6, biascalib*1e6, rntifit*1e6)
+				pl.xlim(min(biascalib)*1e6,max(biascalib)*1e6)
+				
+				pl.text(0.6, 0.85, 'R = %.2f Ohms'%RR, fontsize=15, transform=ax.transAxes)
+				pl.text(0.6, 0.75, 'SC slope = %.2f'%ceff_sc[0], fontsize=15, transform=ax.transAxes)
 		
-                fn = os.path.join(out_path,'single_iv_row%02d'%row + '_col%02d_yes.png'%col)
-                eps.possetting(fig, ffn = fn, ifleg = False, ifgrid = True, ifshow = False)
-        
+				fn = os.path.join(out_path,'single_iv_row%02d'%row + '_col%02d_yes.png'%col)
+				eps.possetting(fig, ffn = fn, ifleg = False, ifgrid = True, ifshow = False)
 	return biascalib, fbcalib, RR, ceff_sc[0]
 
 
@@ -101,33 +100,33 @@ def get_LC_calibed(bias, fb, calib, fitrange = None, row = None, col = None, out
 # input raw bias/fb in ADU, only for 1 det
 # output biascalib, fbcalib with shift, rnti
 def get_LC(bias, fb, calib, fitrange = None, row = None, col = None, out_path = None, flip = 1, DCflag='RN'):
-	
+
 	if not fitrange:
 		fitrange = get_default_fitrange()
 
-	fbcalib_ = -1*flip*fb*calib["FB_CAL"][0]
-	biascalib_ = bias*calib["BIAS_CAL"][0]
-	
-        # Fit
-        # fit range
-        bias_fit = np.array([bias[i] for i in range((len(bias))) if (bias[i]>fitrange["rnti_low"] and bias[i]<fitrange["rnti_hgh"])])
-        fb_fit   = np.array([fb[i] for i in range((len(fb))) if (bias[i]>fitrange["rnti_low"] and bias[i]<fitrange["rnti_hgh"])])
-        # fit with poly1
-        ceff  = np.polyfit(bias_fit*calib["BIAS_CAL"][0],-1*flip*fb_fit*calib["FB_CAL"][0],1)
-        ffunc = np.poly1d(ceff)
-        # normal resistance
-        RR = calib["R_SH"]*(1.00/ceff[0]-1.00) #Ohms
-        if RR<10e-3 or RR>1000e-3:
-                RR = float('nan')
+		fbcalib_ = -1*flip*fb*calib["FB_CAL"][0]
+		biascalib_ = bias*calib["BIAS_CAL"][0]
+
+		# Fit
+		# fit range
+		bias_fit = np.array([bias[i] for i in range((len(bias))) if (bias[i]>fitrange["rnti_low"] and bias[i]<fitrange["rnti_hgh"])])
+		fb_fit   = np.array([fb[i] for i in range((len(fb))) if (bias[i]>fitrange["rnti_low"] and bias[i]<fitrange["rnti_hgh"])])
+		# fit with poly1
+		ceff  = np.polyfit(bias_fit*calib["BIAS_CAL"][0],-1*flip*fb_fit*calib["FB_CAL"][0],1)
+		ffunc = np.poly1d(ceff)
+		# normal resistance
+		RR = calib["R_SH"]*(1.00/ceff[0]-1.00) #Ohms
+		if RR<10e-3 or RR>1000e-3:
+			RR = float('nan')
 	# fit sc
 	if fitrange["sc_low"] is None:
-        	fitrange["sc_low"] = min(bias)
+		fitrange["sc_low"] = min(bias)
 		fitrange["sc_hgh"] = max(bias)
-	bias_sc  = np.array([bias[i] for i in range((len(bias))) if (bias[i]>fitrange["sc_low"] and bias[i]<fitrange["sc_hgh"])])
-        fb_sc    = np.array([fb[i] for i in range((len(fb))) if (bias[i]>fitrange["sc_low"] and bias[i]<fitrange["sc_hgh"])])
-        # fit sc with polfb1
-        ceff_sc  = np.polyfit(bias_sc*calib["BIAS_CAL"][0],-1*flip*fb_sc*calib["FB_CAL"][0],1)
-        ffunc_sc = np.poly1d(ceff_sc)
+		bias_sc  = np.array([bias[i] for i in range((len(bias))) if (bias[i]>fitrange["sc_low"] and bias[i]<fitrange["sc_hgh"])])
+		fb_sc    = np.array([fb[i] for i in range((len(fb))) if (bias[i]>fitrange["sc_low"] and bias[i]<fitrange["sc_hgh"])])
+		# fit sc with polfb1
+		ceff_sc  = np.polyfit(bias_sc*calib["BIAS_CAL"][0],-1*flip*fb_sc*calib["FB_CAL"][0],1)
+		ffunc_sc = np.poly1d(ceff_sc)
 
 	if DCflag == 'RN':
 		shift_h  = ffunc(0)
@@ -140,22 +139,22 @@ def get_LC(bias, fb, calib, fitrange = None, row = None, col = None, out_path = 
 	else:
 		print("DCflag = ['RN', 'SC', 0, -1], otherwise use RN")
 		shift_h  = ffunc(0)
-        fbcalib = fbcalib_ - shift_h
-	biascalib = biascalib_
-        rntifit  = ffunc(biascalib) - shift_h
+		fbcalib = fbcalib_ - shift_h
+		biascalib = biascalib_
+		rntifit  = ffunc(biascalib) - shift_h
 
 	if out_path and row+1 and col+1:
-                fig,ax = eps.presetting(7.4,6,lx="Ib [uA]",ly="Ites [uA]")
-                pl.suptitle('Row %02d'%row + ' Col %02d'%col)
-                pl.plot(biascalib*1e6,fbcalib*1e6, biascalib*1e6, rntifit*1e6)
-                pl.xlim(min(biascalib)*1e6,max(biascalib)*1e6)
-                
-                pl.text(0.6, 0.85, 'R = %.2f Ohms'%RR, fontsize=15, transform=ax.transAxes)
-                pl.text(0.6, 0.75, 'SC slope = %.2f'%ceff_sc[0], fontsize=15, transform=ax.transAxes)
+				fig,ax = eps.presetting(7.4,6,lx="Ib [uA]",ly="Ites [uA]")
+				pl.suptitle('Row %02d'%row + ' Col %02d'%col)
+				pl.plot(biascalib*1e6,fbcalib*1e6, biascalib*1e6, rntifit*1e6)
+				pl.xlim(min(biascalib)*1e6,max(biascalib)*1e6)
+				
+				pl.text(0.6, 0.85, 'R = %.2f Ohms'%RR, fontsize=15, transform=ax.transAxes)
+				pl.text(0.6, 0.75, 'SC slope = %.2f'%ceff_sc[0], fontsize=15, transform=ax.transAxes)
 		
-                fn = os.path.join(out_path,'single_iv_row%02d'%row + '_col%02d_yes.png'%col)
-                eps.possetting(fig, ffn = fn, ifleg = False, ifgrid = True, ifshow = False)
-        
+				fn = os.path.join(out_path,'single_iv_row%02d'%row + '_col%02d_yes.png'%col)
+				eps.possetting(fig, ffn = fn, ifleg = False, ifgrid = True, ifshow = False)
+		
 	return biascalib, fbcalib, RR, ceff_sc[0]
 
 
@@ -277,10 +276,10 @@ def get_SVs(ites, ibias):
 def get_default_fitrange():
 	fitrange = {}
 	fitrange["rnal_low"] = 9000
-        fitrange["rnal_hgh"] = 10000
+	fitrange["rnal_hgh"] = 10000
 	fitrange["rnti_low"] = 1900
-        fitrange["rnti_hgh"] = 2000
-        fitrange["sc_low"] = 0
-        fitrange["sc_hgh"] = 50
+	fitrange["rnti_hgh"] = 2000
+	fitrange["sc_low"] = 0
+	fitrange["sc_hgh"] = 50
 	return fitrange
 	
