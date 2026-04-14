@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 from scipy import signal
 from scipy.fftpack import dct,dst,fft
-import pickle as pickle
+import cPickle as pickle
 import ba40_ModuleMapping as ba40map
 import glob
 import shutil
@@ -30,8 +30,8 @@ def main():
 	nfft = 10000	     # for signal.welch
 	targetpath = sys.argv[1]
 	targetfiles = sys.argv[2]
-	cols = list(range(24))         # the cols in interest. though the data structure will be saved in 24*33 matrix
-	rows = list(range(33))
+	cols = range(24)         # the cols in interest. though the data structure will be saved in 24*33 matrix
+	rows = range(33)
 	#===============================	
 
 	outpath = targetpath.replace('cryo', 'output') + '%s_filt%s_nfft%d_at%.1f/'%(targetfiles.replace('*','X'), detrend, nfft, Nfreq)
@@ -40,7 +40,7 @@ def main():
 
 	fnpickle = outpath+'rowlenscan_Np%.1f.pkl'%Nfreq
 	if os.path.isfile(fnpickle):
-		ifreproduce = input('Reproduce?')
+		ifreproduce = raw_input('Reproduce?')
 		shutil.copy2(os.path.realpath(__file__), outpath + (os.path.realpath(__file__).split("/")[-1]).replace(".py",".txt"))
 		if ifreproduce in [1, 'y', 'yes','Y','Yes']:
 			reproduce(targetpath, targetfiles, Nfreq,cols,rows, detrend, nfft, outpath)

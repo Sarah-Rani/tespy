@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import pylab as pl
 import numpy as np
 from scipy import signal
-import cPickle as pickle
+import pickle as pickle
 import math
 import mce_data
 import peakdetect
@@ -46,12 +46,12 @@ def get_time_stream(row, col, S, filename, out_path_main):
 	y = S[row,col]
 	pl.plot(y)
 	[maxp,minp] = peakdetect.peakdetect(y_axis=y, lookahead=5000)
-	minx,miny = zip(*minp)
+	minx,miny = list(zip(*minp))
 	minx,miny = real_wlf(minx,miny,lsurr=15000)
 	pl.scatter(minx,miny,color='r')
 	#plt.ylim(-200,200)
 	fn = os.path.join(out_path, 'row'+str(int(row))+'col'+str(int(col))+'.png')
-	print("'r%dc%d':{'"%(row,col)+filename+"':%s}"%str(minx))
+	print(("'r%dc%d':{'"%(row,col)+filename+"':%s}"%str(minx)))
 	plt.show()
 	plt.close()
 	return S[row,col], minx,miny
@@ -81,13 +81,13 @@ def find_wlf(in_path,filename,mc,mr):
 
 def main():
 	if opts.date is None:
-		opts.date = raw_input('date YYYYMMDD: ')
+		opts.date = input('date YYYYMMDD: ')
 	if opts.dn is None:
-		opts.dn = raw_input('filename: ')
+		opts.dn = input('filename: ')
 	if opts.mc is None:
-		opts.mc = int(raw_input('col/int: '))
+		opts.mc = int(input('col/int: '))
 	if opts.mr is None:
-		opts.mr = int(raw_input('row/int: '))
+		opts.mr = int(input('row/int: '))
 	in_path = '/home/data/cryo/%s'%(opts.date)
 	find_wlf(in_path,opts.dn,opts.mc,opts.mr)
 

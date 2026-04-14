@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import scipy.io as sio
 import numpy as np
 import math
-import pickle as pickle
+import cPickle as pickle
 from scipy.optimize import curve_fit
 import sys, os
 import os.path
@@ -34,7 +34,7 @@ class opts:
 			'sc_hgh': 30.00}	
 	#cols = range(12)
 	cols = [0, 1]
-	rows = list(range(33))
+	rows = range(33)
 
 
 # ================================== #
@@ -82,9 +82,9 @@ def main():
 	colors = pl.cm.jet(np.linspace(0,1,len(templist)))
 	
 	in_path  = './cryo/%s/'%(opts.date)
-	print(('input folder: %s'%in_path))
+	print('input folder: %s'%in_path)
 	out_path_main = './output/%s/'%(opts.date)
-	print(('output folder: %s'%out_path_main))
+	print('output folder: %s'%out_path_main)
 	
 	for temp in templist:
 		#===================================#

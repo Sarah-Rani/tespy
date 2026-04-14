@@ -1,4 +1,4 @@
-import pickle as pkl
+import cPickle as pkl
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -78,7 +78,7 @@ for ib in range(len(d[0])):
     
     plt.figure()
     spssm=np.ma.masked_where(np.isnan(spss),spss)
-    plt.pcolormesh(np.linspace(210.44/2/len(spss[0]), 210.44/2, len(spss[0])), np.array(list(range(33*24))), np.log10(spssm),vmin=1, vmax=3, cmap='coolwarm')
+    plt.pcolormesh(np.linspace(210.44/2/len(spss[0]), 210.44/2, len(spss[0])), np.array(range(33*24)), np.log10(spssm),vmin=1, vmax=3, cmap='coolwarm')
     #plt.scatter(np.array([np.linspace(210.44/2/len(spss[0]), 210.44/2, len(spss[0]))]*24*33).reshape(len(spss[0])*24*33),
     #            np.array([[det for ii in range(len(spss[0]))] for det in range(24*33)]).reshape(len(spss[0])*24*33),
     #            c=spss.reshape(len(spss[0])*24*33))
@@ -139,8 +139,8 @@ for ib in range(len(d[0])):
                 dsind[ii]=col*33+row
                 ii+=1
     plt.plot(f,np.nanmean(spss_[dsind],0), linewidth=1, color='r')
-    print((min(f)))
-    print((min(np.nanmean(spss_[dsind],0))))
+    print(min(f))
+    print(min(np.nanmean(spss_[dsind],0)))
     plt.xlabel('Hz', fontsize=14)
     plt.ylabel('pA/rtHz', fontsize=14)
     plt.xscale('log')

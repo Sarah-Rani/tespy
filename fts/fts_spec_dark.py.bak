@@ -13,7 +13,7 @@ sys.path.insert(0, "/home/cheng/Pole2019/analysispy/tespy")
 from lcdata import get_PLC
 import calib_SK
 import calib_BA1
-import pickle as pickle
+import cPickle as pickle
 import ba30_ModuleMapping_N3 as minfo
 import sys,os
 sys.path.insert(0, "/home/cheng/Pole2019/analysispy/tespy/fts/filelist")
@@ -46,7 +46,7 @@ doEff = 0
 date  = '20210511'
 runn = 'SK_N7B6' # N7B6 is typo for N7N6.
 cols = [8,9,0,1]
-rows = list(range(33))
+rows = range(33)
 inftsl = '/home/data/output/%s/%s_fts_perfn.pkl'%(date,runn)
 indpdt = '/home/data/output/20210423/20210423_SK_BA30N6N7/20210423_SK_BA30N6N7_dpdt_rnti.pkl'
 
@@ -56,7 +56,7 @@ def get_darklist(fnplc,rntis,pols,wlfs):
 
 	wlf_count = np.where(np.isnan(wlfs),0,1)
 	nwlf = np.sum(wlf_count,(1,2))
-	print() 
+	print 
 
 	plc = get_PLC(fnplc,fitrange,calib,-1)
 	darklist = []
@@ -100,7 +100,7 @@ def main():
 	if not os.path.isdir(outfigdir):
 		os.makedirs(outfigdir)
 
-	x = np.array(list(range(2*nlen_hlf_intf+1)))	
+	x = np.array(range(2*nlen_hlf_intf+1))	
 	xp = x*1/nSample*v_mirror # mm
 
 	if os.path.exists(fnpickle):
@@ -112,13 +112,13 @@ def main():
 		freq = d[4]
 
 	else:
-		x = np.array(list(range(2*nlen_hlf_intf+1)))
+		x = np.array(range(2*nlen_hlf_intf+1))
 	
 		# collect relevant scans
 		filelist = flist.fns
 		fb_hs_array = np.full((24,33,len(filelist),10,2*nlen_hlf_intf+1), np.nan)
 		for ifn,fn in enumerate(filelist):
-			print("Check file (%d/%d): %s"%(ifn+1,len(filelist),fn))
+			print "Check file (%d/%d): %s"%(ifn+1,len(filelist),fn)
 	
 			fnplcdir = '/home/data/cryo/%s'%fn[:8]
 			fnplcs = np.sort(glob.glob('%s/*_plc_bias_al'%fnplcdir))
@@ -130,8 +130,8 @@ def main():
 			f = mce_data.MCEFile('/home/data/cryo/%s/%s'%(fn[:8],fn))
 			fb_all = f.Read(row_col=True,unfilter='DC').data
 
-			print(fn)
-			print(darklist)
+			print fn
+			print darklist
 	
 			for idd,dd in enumerate(darklist):			
 				fb = fb_all[dd[1],dd[0]]
@@ -191,7 +191,7 @@ def main():
 					plt.xlabel('freq GHz',fontsize=25)
 					
 					figname = '%s/spec_row%d_col%d_ifn%d.png'%(outfigdir,row,col,ifn)
-					print(figname)
+					print figname
 					pl.savefig(figname)
 
 					
@@ -238,7 +238,7 @@ def main():
 			plt.xlabel('freq GHz',fontsize=25)
 			
 			figname = '%s/spec_row%d_col%d_freqrange%d.png'%(outfigdir,row,col,highp)
-			print(figname)
+			print figname
 			#plt.show()
 			pl.savefig(figname)
 

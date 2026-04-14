@@ -1,4 +1,4 @@
-import pickle as pkl
+import cPickle as pkl
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -89,7 +89,7 @@ for im in range(12):
 
     plt.figure()
     spssm=np.ma.masked_where(np.isnan(spss),spss)
-    plt.pcolormesh(np.linspace(210.44/2/len(spss[0]), 210.44/2, len(spss[0])), np.array(list(range(len(d[2])*2*len(d[2][0][0])))), spssm,vmin=10, vmax=300, cmap='coolwarm')
+    plt.pcolormesh(np.linspace(210.44/2/len(spss[0]), 210.44/2, len(spss[0])), np.array(range(len(d[2])*2*len(d[2][0][0]))), spssm,vmin=10, vmax=300, cmap='coolwarm')
     plt.colorbar().set_label('pA/rtHz')
     for ii in range(len(d[2])):
         bias=int(biass[ii])
@@ -104,7 +104,7 @@ for im in range(12):
 
     plt.figure()
     spssm=np.ma.masked_where(np.isnan(spss),spss)
-    plt.pcolormesh(np.linspace(210.44/2/len(spss[0]), 210.44/2, len(spss[0])), np.array(list(range(len(d[2])*2*len(d[2][0][0])))), np.log10(spssm), vmin=1, vmax=3, cmap='coolwarm')
+    plt.pcolormesh(np.linspace(210.44/2/len(spss[0]), 210.44/2, len(spss[0])), np.array(range(len(d[2])*2*len(d[2][0][0]))), np.log10(spssm), vmin=1, vmax=3, cmap='coolwarm')
     plt.colorbar().set_label('log10 pA/rtHz')
     for ii in range(len(d[2])):
         bias=int(biass[ii])

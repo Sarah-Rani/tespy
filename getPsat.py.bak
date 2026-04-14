@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import scipy.io as sio
 import numpy as np
 import math
-import pickle as pickle
+import cPickle as pickle
 from scipy.optimize import curve_fit
 import sys, os
 import os.path
@@ -31,9 +31,9 @@ class opts:
 			'rnti_hgh': 1000.00,
 			'sc_low': 0.00,
 			'sc_hgh': 30.00}	
-	cols = list(range(24))
+	cols = range(24)
 	#cols = [0, 1]
-	rows = list(range(33))
+	rows = range(33)
 
 
 # ================================== #
@@ -78,9 +78,9 @@ def main():
 	prdata = {}
 	
 	in_path  = './cryo/%s/'%(opts.date)
-	print(('input folder: %s'%in_path))
+	print('input folder: %s'%in_path)
 	out_path_main = './output/%s/'%(opts.date)
-	print(('output folder: %s'%out_path_main))
+	print('output folder: %s'%out_path_main)
 	
 	#===================================#
 	# loading data/making output dirs

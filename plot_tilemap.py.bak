@@ -1,12 +1,12 @@
 import os,sys
 import numpy as np
-import pickle as pickle
-import triangle_mapping as tri
+import cPickle as pickle
+import triangle_mapping_30 as tri
 import shutil
 # inputs
-module = 'M9'
-run = '20200102_BA_BA30M4M5M6M7M8M9'
-im = 11
+run = '20200102_BA_BA30N1N2N3N4'
+module = 'N4'
+im = 10
 inpath = './output/20200102/%s/'%run
 fn = '%s_dpdt_rnti.pkl'%run
 cmap = 'jet'

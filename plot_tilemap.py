@@ -1,6 +1,6 @@
 import os,sys
 import numpy as np
-import cPickle as pickle
+import pickle as pickle
 import triangle_mapping_30 as tri
 import shutil
 # inputs

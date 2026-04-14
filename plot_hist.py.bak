@@ -1,6 +1,6 @@
 import os,sys
 import numpy as np
-import pickle as pickle
+import cPickle as pickle
 import histogram as hist
 import shutil
 import easyplots as esp
@@ -40,7 +40,7 @@ for im in range(12):
     		binrange=[50., 180.])
     
     fig,ax = esp.presetting(7.4,6,lx="channels",ly="Rn, mOhm")
-    ax.scatter(list(range(66)), (rnti[im*2:im*2+2, :]).reshape(2*33))
+    ax.scatter(range(66), (rnti[im*2:im*2+2, :]).reshape(2*33))
     esp.possetting(fig, ffn = outpath+'module%d_rnti_scatter.png'%im, ifleg = False, ifgrid = True, ifshow = False)
 
     hist.plot_1Dhist((psat[im*2:im*2+2, :]).reshape(2*33), outpath, 'module%d_psat_hist'%im,
@@ -51,5 +51,5 @@ for im in range(12):
                     binrange=[0., 5.])
 
     fig,ax = esp.presetting(7.4,6,lx="channels",ly="Psat, pW")
-    ax.scatter(list(range(66)), (psat[im*2:im*2+2, :]).reshape(2*33))
+    ax.scatter(range(66), (psat[im*2:im*2+2, :]).reshape(2*33))
     esp.possetting(fig, ffn = outpath+'module%d_psat_scatter.png'%im, ifleg = False, ifgrid = True, ifshow = False)

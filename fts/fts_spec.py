@@ -9,7 +9,7 @@ import pylab as pl
 import mce_data
 import calib_SK
 import calib_BA1
-import cPickle as pickle
+import pickle as pickle
 #import ba40_ModuleMapping_BA as ba40_ModuleMapping
 import ba30_ModuleMapping as minfo
 import sys,os
@@ -215,7 +215,7 @@ def main():
 			#===================================================================
 			
 			fb_hs_final = np.array([0]*(2*nlen_hlf_intf+1))
-			x = np.array(range(2*nlen_hlf_intf+1))	
+			x = np.array(list(range(2*nlen_hlf_intf+1)))	
 			xp = x*1/nSample*v_mirror # mm
 			
 			fb_hs_list = []

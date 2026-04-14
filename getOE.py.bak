@@ -20,7 +20,7 @@ import mce_data
 #import single_pr_darkrun
 from lcdata import get_LC as lc
 from lcdata import get_PR as pr
-import pickle as pickle
+import cPickle as pickle
 #import ba40_ModuleMapping_BA as bamap
 import shutil
 
@@ -40,7 +40,7 @@ class opts:
 	                'sc_low': None,
 	                'sc_hgh': None}
 	cols = [0,1]
-	rows = list(range(33))
+	rows = range(33)
 	ifoutputinMCE = False 
 	doFigure = True
 	# plot ax[1] xy limits
@@ -130,7 +130,7 @@ def main():
 	
 	for row in opts.rows:
 		for col in opts.cols:
-			print(('row %d, col %d'%(row, col)))
+			print('row %d, col %d'%(row, col))
 			fitrange = opts.fitrange
 			ibias300, ites300, rnti300, ksc300 = lc(bias300, y300[row,col], calib, fitrange, row, col)			
 			ibias077, ites077, rnti077, ksc077 = lc(bias077, y077[row,col], calib, fitrange, row, col)
@@ -139,7 +139,7 @@ def main():
 			rr300, pp300, psat300 = pr(ibias300, ites300, calib, rnti, rnpsat, row=row, col=col, reasonableInorm=opts.reasonableInorm)
 			rr077, pp077, psat077 = pr(ibias077, ites077, calib, rnti, rnpsat, row=row, col=col, reasonableInorm=opts.reasonableInorm)
 			dpdt = (psat077 - psat300)/(300.-77.)*1.0e12
-			print(("dpdt %.3f pW/K"%dpdt))
+			print("dpdt %.3f pW/K"%dpdt)
 			# Outputs
 			if (rnti>0.25 or rnti<0.01) or (dpdt>0.12 or dpdt<0.001):
 				dpdt = float('nan')

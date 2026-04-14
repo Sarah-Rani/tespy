@@ -41,7 +41,7 @@ def plot_1Dhist(array1D, outpath, filename, ext='png', maintitle='', xlabel='', 
 			y=np.abs(array1D-np.nanmedian(array1D))
 			std=np.nanmedian(y)*1.4826
 		else:
-			print(('unknown stdtype %s'%stdtype))
+			print('unknown stdtype %s'%stdtype)
 		pl.text(0.6, 0.8, '%s = %.2f'%(stdtype,std), fontsize=15, transform=ax.transAxes)
 	
 	pl.suptitle(maintitle, fontsize=15)

@@ -1,6 +1,6 @@
 import os,sys
 import numpy as np
-import pickle as pickle
+import cPickle as pickle
 import histogram as hist
 
 # inputs

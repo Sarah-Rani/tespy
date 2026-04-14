@@ -48,8 +48,8 @@ def get_LC_calibed(bias, fb, calib, fitrange = None, row = None, col = None, out
 	
         # Fit
         # fit range
-        bias_fit = np.array([bias[i] for i in range((len(bias))) if (bias[i]>fitrange["rnti_low"] and bias[i]<fitrange["rnti_hgh"])])
-        fb_fit   = np.array([fb[i] for i in range((len(fb))) if (bias[i]>fitrange["rnti_low"] and bias[i]<fitrange["rnti_hgh"])])
+        bias_fit = np.array([bias[i] for i in xrange((len(bias))) if (bias[i]>fitrange["rnti_low"] and bias[i]<fitrange["rnti_hgh"])])
+        fb_fit   = np.array([fb[i] for i in xrange((len(fb))) if (bias[i]>fitrange["rnti_low"] and bias[i]<fitrange["rnti_hgh"])])
         # fit with poly1
         ceff  = np.polyfit(bias_fit*calib["BIAS_CAL"][0],-1*flip*fb_fit*calib["FB_CAL"][0],1)
         ffunc = np.poly1d(ceff)
@@ -61,8 +61,8 @@ def get_LC_calibed(bias, fb, calib, fitrange = None, row = None, col = None, out
 	if fitrange["sc_low"] is None:
         	fitrange["sc_low"] = min(bias)
 		fitrange["sc_hgh"] = max(bias)
-	bias_sc  = np.array([bias[i] for i in range((len(bias))) if (bias[i]>fitrange["sc_low"] and bias[i]<fitrange["sc_hgh"])])
-        fb_sc    = np.array([fb[i] for i in range((len(fb))) if (bias[i]>fitrange["sc_low"] and bias[i]<fitrange["sc_hgh"])])
+	bias_sc  = np.array([bias[i] for i in xrange((len(bias))) if (bias[i]>fitrange["sc_low"] and bias[i]<fitrange["sc_hgh"])])
+        fb_sc    = np.array([fb[i] for i in xrange((len(fb))) if (bias[i]>fitrange["sc_low"] and bias[i]<fitrange["sc_hgh"])])
         # fit sc with polfb1
         ceff_sc  = np.polyfit(bias_sc*calib["BIAS_CAL"][0],-1*flip*fb_sc*calib["FB_CAL"][0],1)
         ffunc_sc = np.poly1d(ceff_sc)
@@ -110,8 +110,8 @@ def get_LC(bias, fb, calib, fitrange = None, row = None, col = None, out_path = 
 	
         # Fit
         # fit range
-        bias_fit = np.array([bias[i] for i in range((len(bias))) if (bias[i]>fitrange["rnti_low"] and bias[i]<fitrange["rnti_hgh"])])
-        fb_fit   = np.array([fb[i] for i in range((len(fb))) if (bias[i]>fitrange["rnti_low"] and bias[i]<fitrange["rnti_hgh"])])
+        bias_fit = np.array([bias[i] for i in xrange((len(bias))) if (bias[i]>fitrange["rnti_low"] and bias[i]<fitrange["rnti_hgh"])])
+        fb_fit   = np.array([fb[i] for i in xrange((len(fb))) if (bias[i]>fitrange["rnti_low"] and bias[i]<fitrange["rnti_hgh"])])
         # fit with poly1
         ceff  = np.polyfit(bias_fit*calib["BIAS_CAL"][0],-1*flip*fb_fit*calib["FB_CAL"][0],1)
         ffunc = np.poly1d(ceff)
@@ -123,8 +123,8 @@ def get_LC(bias, fb, calib, fitrange = None, row = None, col = None, out_path = 
 	if fitrange["sc_low"] is None:
         	fitrange["sc_low"] = min(bias)
 		fitrange["sc_hgh"] = max(bias)
-	bias_sc  = np.array([bias[i] for i in range((len(bias))) if (bias[i]>fitrange["sc_low"] and bias[i]<fitrange["sc_hgh"])])
-        fb_sc    = np.array([fb[i] for i in range((len(fb))) if (bias[i]>fitrange["sc_low"] and bias[i]<fitrange["sc_hgh"])])
+	bias_sc  = np.array([bias[i] for i in xrange((len(bias))) if (bias[i]>fitrange["sc_low"] and bias[i]<fitrange["sc_hgh"])])
+        fb_sc    = np.array([fb[i] for i in xrange((len(fb))) if (bias[i]>fitrange["sc_low"] and bias[i]<fitrange["sc_hgh"])])
         # fit sc with polfb1
         ceff_sc  = np.polyfit(bias_sc*calib["BIAS_CAL"][0],-1*flip*fb_sc*calib["FB_CAL"][0],1)
         ffunc_sc = np.poly1d(ceff_sc)

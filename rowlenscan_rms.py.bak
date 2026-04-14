@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 from scipy import signal
 from scipy.fftpack import dct,dst,fft
-import pickle as pickle
+import cPickle as pickle
 import ba40_ModuleMapping as ba40map
 import glob
 import shutil
@@ -26,8 +26,8 @@ def main():
 	#options
 	#===============================
 	targetpath = sys.argv[1]
-	cols = list(range(24))         # the cols in interest. though the data structure will be saved in 24*33 matrix
-	rows = list(range(33))
+	cols = range(24)         # the cols in interest. though the data structure will be saved in 24*33 matrix
+	rows = range(33)
 	#===============================	
 
         #calculate err
@@ -36,7 +36,7 @@ def main():
 		os.makedirs(outpath)
 	fnpickle = outpath+'rowlenscan.pkl'
 	if os.path.isfile(fnpickle):
-		ifreproduce = input('Reproduce?')
+		ifreproduce = raw_input('Reproduce?')
 		shutil.copy2(os.path.realpath(__file__), outpath + (os.path.realpath(__file__).split("/")[-1]).replace(".py",".txt"))
 		if ifreproduce in [1, 'y', 'yes','Y','Yes']:
 			reproduce(targetpath, cols, rows,outpath)
