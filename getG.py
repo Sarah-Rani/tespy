@@ -23,17 +23,17 @@ from Gtemplists import gettemplists
 class opts:
 	testbed = 'BA'
 	freq = 40 # GHz
-	date = '20190908'
+	date = '20260414'
 	module = 'BA40M4T4'
 	runn = '%s_%s_%s'%(date,testbed,module)
-	rnpsat = 0.07 # Ohm
+	rnpsat = 0.02 # Ohm
 	iffitbeta = True 
-	fitrange = {	'rnti_low': 700.00,
-			'rnti_hgh': 900.00,
+	fitrange = {	'rnti_low': 150.00,
+			'rnti_hgh': 500.00,
 			'sc_low': 0.00,
 			'sc_hgh': 30.00}	
 	#cols = range(12)
-	cols = [0, 1]
+	cols = [0, 2, 3, 4]
 	rows = list(range(33))
 
 
@@ -92,14 +92,14 @@ def main():
 		#===================================#
 		filename = 'LC_G_FPU_'+str(temp)+'mK_datamode1_run1'
 		if not os.path.isdir(out_path_main):
-                        os.makedirs(out_path_main)
+			os.makedirs(out_path_main)
 		out_path = out_path_main + filename + '/'
 		if not os.path.isdir(out_path):
 			os.makedirs(out_path)
 		out_Gplot = out_path_main + '%s_Gplot/'%(opts.runn)
 		if not os.path.isdir(out_Gplot):
-                        os.makedirs(out_Gplot)
-		
+			os.makedirs(out_Gplot)
+						
 		datafn = in_path + filename + '/' + filename
 		
 		biasfn = datafn + '.bias'
@@ -145,14 +145,14 @@ def main():
 		for row in opts.rows:
 			gtdata = {}
 			dinfos = {}
-			im, detcol,detrow,detpol = minfo.mce2det(col,row)
+			im, detcol, detrow, detpol = minfo.mce2det(col, row)
 			for itt in range(len(templist)):
 				psatlist[itt] = prdata[str(templist[itt])+'_r'+str(row)+'c'+str(col)][3]*1.00e12
-                		rntilist[itt] = prdata[str(templist[itt])+'_r'+str(row)+'c'+str(col)][2]*1.00e3
-				if rntilist[itt] < 20 or rntilist[itt]>1000:
+				rntilist[itt] = prdata[str(templist[itt])+'_r'+str(row)+'c'+str(col)][2]*1.00e3
+				if rntilist[itt] < 20 or rntilist[itt] > 1000:
 					rntilist[itt] = float('nan')
 			#rnti = np.nanmean(rntilist)
-			rntilist = np.array(rntilist)	
+			rntilist = np.array(rntilist)
 			rnti = np.mean(rntilist[~np.isnan(rntilist)])
 			xdata = np.linspace(240, 510, 100)
 
@@ -160,121 +160,120 @@ def main():
 			pl.clf()
 
 			ax = pl.subplot(1, 3, 1)
-                        pl.suptitle('Row %02d'%row + ' Col %02d'%col)
-                        pl.xlabel('Ibias [uA]', fontsize=15)
-                        pl.ylabel('Ites [uA]', fontsize=15)
-                        pl.xlim(0,350)
-                        pl.ylim(0,50)
-                        for itemp,temp in enumerate(templist):
+			pl.suptitle('Row %02d'%row + ' Col %02d'%col)
+			pl.xlabel('Ibias [uA]', fontsize=15)
+			pl.ylabel('Ites [uA]', fontsize=15)
+			pl.xlim(0, 350)
+			pl.ylim(0, 50)
+			for itemp, temp in enumerate(templist):
 				#temp2 = templist2[itemp] #FPU1to2
-                                pl.plot(lcdata[str(temp)+'_r'+str(row)+'c'+str(col)][0]*1.e6,
-					lcdata[str(temp)+'_r'+str(row)+'c'+str(col)][1]*1.e6, 
-					color=colors[itemp], 
-					label=str(temp)+'mK') #FPU1to2
-			plt.tick_params(labelsize=14)
-			pl.grid()
-                        pl.legend(loc=1, prop={'size': 14})
-
-			ax = pl.subplot(1, 3, 2)
-	                pl.suptitle('Row %02d'%row + ' Col %02d'%col)
-        	        pl.xlabel('R [mOhms]', fontsize=15)
-                	pl.ylabel('P [pW]', fontsize=15)
-			pl.xlim(0,200)
-			pl.ylim(0,6)
-			for itemp,temp in enumerate(templist):
-				#temp2 = templist2[itemp] #FPU1to2
-				pl.plot(prdata[str(temp)+'_r'+str(row)+'c'+str(col)][0]*1.00e3,
-					prdata[str(temp)+'_r'+str(row)+'c'+str(col)][1]*1.00e12,
-					color=colors[itemp],
-					label=str(temp)+'mK') #FPU1to2
+				pl.plot(lcdata[str(temp)+'_r'+str(row)+'c'+str(col)][0]*1.e6,
+						lcdata[str(temp)+'_r'+str(row)+'c'+str(col)][1]*1.e6,
+						color=colors[itemp],
+						label=str(temp)+'mK') #FPU1to2
 			plt.tick_params(labelsize=14)
 			pl.grid()
 			pl.legend(loc=1, prop={'size': 14})
-			pl.axvline(x = opts.rnpsat*1.0e3,color='r', linestyle='--')
+
+			ax = pl.subplot(1, 3, 2)
+			pl.suptitle('Row %02d'%row + ' Col %02d'%col)
+			pl.xlabel('R [mOhms]', fontsize=15)
+			pl.ylabel('P [pW]', fontsize=15)
+			pl.xlim(0, 200)
+			pl.ylim(0, 6)
+			for itemp, temp in enumerate(templist):
+				#temp2 = templist2[itemp] #FPU1to2
+				pl.plot(prdata[str(temp)+'_r'+str(row)+'c'+str(col)][0]*1.00e3,
+						prdata[str(temp)+'_r'+str(row)+'c'+str(col)][1]*1.00e12,
+						color=colors[itemp],
+						label=str(temp)+'mK') #FPU1to2
+			plt.tick_params(labelsize=14)
+			pl.grid()
+			pl.legend(loc=1, prop={'size': 14})
+			pl.axvline(x=opts.rnpsat*1.0e3, color='r', linestyle='--')
 
 			ax = pl.subplot(1, 3, 3)
-			pl.scatter(templist,psatlist) #FPU1to2
+			pl.scatter(templist, psatlist) #FPU1to2
 			if 'popt' in locals():
 				del popt
 				del pcov
-			
+
 			try:
 				ind = np.where(np.array(psatlist) > 0.1)
-                        	popt, pcov = curve_fit(GTcModel, 
-						np.array(templist)[ind], 
+				popt, pcov = curve_fit(GTcModel,
+						np.array(templist)[ind],
 						np.array(psatlist)[ind]) #FPU1to2
 				if opts.iffitbeta:
-					pl.plot(xdata, GTcModel(xdata, *popt), 'g--',label='fit: Gc=%5.3f, Tc=%5.3f, beta=%5.3f' % tuple(popt))
+					pl.plot(xdata, GTcModel(xdata, *popt), 'g--', label='fit: Gc=%5.3f, Tc=%5.3f, beta=%5.3f' % tuple(popt))
 				else:
-					pl.plot(xdata, GTcModel(xdata, *popt), 'g--',label='fit: Gc=%5.3f, Tc=%5.3f, beta=2.00' % tuple(popt))
+					pl.plot(xdata, GTcModel(xdata, *popt), 'g--', label='fit: Gc=%5.3f, Tc=%5.3f, beta=2.00' % tuple(popt))
 			except:
 				popt = np.array([-1,-1,-1])
 				pcov = np.array([-1,-1,-1])
 				pass
-			
-			pl.xlim(200,510)
-                        pl.ylim(0,6)
+
+			pl.xlim(200, 510)
+			pl.ylim(0, 6)
 			pl.ylabel('P [pW]', fontsize=15)
 			pl.xlabel('T [mK]', fontsize=15)
 			plt.tick_params(labelsize=14)
 			plt.grid()
-			if popt[0]>0 and popt[1]>0 and popt[1]<550:
+			if popt[0] > 0 and popt[1] > 0 and popt[1] < 550:
 				try:
-					pl.text(0.5,0.9,'Gc='+str(round(popt[0]*1e3,1))+' pW/K',transform=ax.transAxes, fontsize=14)
-					pl.text(0.5,0.85,'Tc='+str(round(popt[1]))+' mK',transform=ax.transAxes, fontsize=14)
+					pl.text(0.5, 0.9, 'Gc='+str(round(popt[0]*1e3,1))+' pW/K', transform=ax.transAxes, fontsize=14)
+					pl.text(0.5, 0.85, 'Tc='+str(round(popt[1]))+' mK', transform=ax.transAxes, fontsize=14)
 					if opts.iffitbeta:
-						pl.text(0.5,0.80,'beta='+str(round(popt[2],2)),transform=ax.transAxes, fontsize=14)
+						pl.text(0.5, 0.80, 'beta='+str(round(popt[2],2)), transform=ax.transAxes, fontsize=14)
 					else:
-						pl.text(0.5,0.80,'beta='+str(round(2.0,2)),transform=ax.transAxes, fontsize=14)
-					pl.text(0.5,0.75,'RnTi='+str(round(rnti))+' mOhm',transform=ax.transAxes, fontsize=14)
+						pl.text(0.5, 0.80, 'beta='+str(round(2.0,2)), transform=ax.transAxes, fontsize=14)
+					pl.text(0.5, 0.75, 'RnTi='+str(round(rnti))+' mOhm', transform=ax.transAxes, fontsize=14)
 					gtdata['Gc'] = popt[0]*1e3
-	        		        gtdata['Tc'] = popt[1]
+					gtdata['Tc'] = popt[1]
 					if opts.iffitbeta:
-        			        	gtdata['beta'] = popt[2]
+						gtdata['beta'] = popt[2]
 					else:
 						gtdata['beta'] = 2.00
-					gtdata['rnti'] = rnti	
+					gtdata['rnti'] = rnti
 					dinfos['mcecol'] = col
 					dinfos['mcerow'] = row
 					dinfos['detcol'] = detcol
-                		        dinfos['detrow'] = detrow
-                		        dinfos['pol'] = detpol
+					dinfos['detrow'] = detrow
+					dinfos['pol'] = detpol
 				except:
-                		        gtdata['Gc'] = float('nan') #pW/K
-                		        gtdata['Tc'] = float('nan')
-                		        gtdata['beta'] = float('nan')
+					gtdata['Gc'] = float('nan') #pW/K
+					gtdata['Tc'] = float('nan')
+					gtdata['beta'] = float('nan')
 					gtdata['rnti'] = float('nan') # mO
 					dinfos['mcecol'] = float('nan')
-                		        dinfos['mcerow'] = float('nan')
-                		        dinfos['detcol'] = float('nan')
-                		        dinfos['detrow'] = float('nan')
-                		        dinfos['pol'] = float('nan')
+					dinfos['mcerow'] = float('nan')
+					dinfos['detcol'] = float('nan')
+					dinfos['detrow'] = float('nan')
+					dinfos['pol'] = float('nan')
 			else:
 				gtdata['Gc'] = float('nan')
-                                gtdata['Tc'] = float('nan')
-                                gtdata['beta'] = float('nan')
-                                gtdata['rnti'] = float('nan')
-                                dinfos['mcecol'] = float('nan')
-                                dinfos['mcerow'] = float('nan')
-                                dinfos['detcol'] = float('nan')
-                                dinfos['detrow'] = float('nan')
-                                dinfos['pol'] = float('nan')
+				gtdata['Tc'] = float('nan')
+				gtdata['beta'] = float('nan')
+				gtdata['rnti'] = float('nan')
+				dinfos['mcecol'] = float('nan')
+				dinfos['mcerow'] = float('nan')
+				dinfos['detcol'] = float('nan')
+				dinfos['detrow'] = float('nan')
+				dinfos['pol'] = float('nan')
 
-				
-			GTdata['r'+str(row)+'c'+str(col)] = gtdata	
-                        DetInfos['r'+str(row)+'c'+str(col)] = dinfos
+			GTdata['r'+str(row)+'c'+str(col)] = gtdata
+			DetInfos['r'+str(row)+'c'+str(col)] = dinfos
 			del gtdata
-			del dinfos	
-			
-			fn = os.path.join(out_Gplot,'%s_G_row%d'%(opts.testbed, row) + '_col%d'%col)
-			pl.suptitle('mcerow %02d mcecol %02d, detRow %02d detCol %02d Pol-%s'%(row,col,detrow,detcol,detpol), fontsize=15)
-			fnd = os.path.join(out_Gplot,'%s_G_detrow%d'%(opts.testbed, detrow) + '_detcol%d'%detcol+'_pol%s'%detpol)
-			pl.savefig(fn)	
+			del dinfos
+
+			fn = os.path.join(out_Gplot, '%s_G_row%d'%(opts.testbed, row) + '_col%d'%col)
+			pl.suptitle('mcerow %02d mcecol %02d, detRow %02d detCol %02d Pol-%s'%(row, col, detrow, detcol, detpol), fontsize=15)
+			fnd = os.path.join(out_Gplot, '%s_G_detrow%d'%(opts.testbed, detrow) + '_detcol%d'%detcol+'_pol%s'%detpol)
+			pl.savefig(fn)
 			pl.savefig(fnd)
-			 
-	shutil.copy2(os.path.realpath(__file__), out_Gplot + (os.path.realpath(__file__).split("/")[-1]).replace(".py",".txt"))
+
+	shutil.copy2(os.path.realpath(__file__), out_Gplot + (os.path.realpath(__file__).split("/")[-1]).replace(".py", ".txt"))
 	fnpickle = out_Gplot + Gfn + '.pkl'
-        pickle.dump((lcdata,prdata,GTdata,DetInfos),open(fnpickle,'w'))
+	pickle.dump((lcdata, prdata, GTdata, DetInfos), open(fnpickle, 'w'))
 	''' 
         read data: d = pickle.l/ad(/pen(fnpickle,'r')) 
                 d[0] --> lcdata 
