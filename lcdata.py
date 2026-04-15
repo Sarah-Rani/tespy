@@ -101,61 +101,66 @@ def get_LC_calibed(bias, fb, calib, fitrange = None, row = None, col = None, out
 # output biascalib, fbcalib with shift, rnti
 def get_LC(bias, fb, calib, fitrange = None, row = None, col = None, out_path = None, flip = 1, DCflag='RN'):
 
-	if not fitrange:
-		fitrange = get_default_fitrange()
+    if not fitrange:
+        fitrange = get_default_fitrange()
 
-		fbcalib_ = -1*flip*fb*calib["FB_CAL"][0]
-		biascalib_ = bias*calib["BIAS_CAL"][0]
+    # Move calibration and normal fit outside the 'if not fitrange' block
+    fbcalib_ = -1*flip*fb*calib["FB_CAL"][0]
+    biascalib_ = bias*calib["BIAS_CAL"][0]
 
-		# Fit
-		# fit range
-		bias_fit = np.array([bias[i] for i in range((len(bias))) if (bias[i]>fitrange["rnti_low"] and bias[i]<fitrange["rnti_hgh"])])
-		fb_fit   = np.array([fb[i] for i in range((len(fb))) if (bias[i]>fitrange["rnti_low"] and bias[i]<fitrange["rnti_hgh"])])
-		# fit with poly1
-		ceff  = np.polyfit(bias_fit*calib["BIAS_CAL"][0],-1*flip*fb_fit*calib["FB_CAL"][0],1)
-		ffunc = np.poly1d(ceff)
-		# normal resistance
-		RR = calib["R_SH"]*(1.00/ceff[0]-1.00) #Ohms
-		if RR<10e-3 or RR>1000e-3:
-			RR = float('nan')
-	# fit sc
-	if fitrange["sc_low"] is None:
-		fitrange["sc_low"] = min(bias)
-		fitrange["sc_hgh"] = max(bias)
-		bias_sc  = np.array([bias[i] for i in range((len(bias))) if (bias[i]>fitrange["sc_low"] and bias[i]<fitrange["sc_hgh"])])
-		fb_sc    = np.array([fb[i] for i in range((len(fb))) if (bias[i]>fitrange["sc_low"] and bias[i]<fitrange["sc_hgh"])])
-		# fit sc with polfb1
-		ceff_sc  = np.polyfit(bias_sc*calib["BIAS_CAL"][0],-1*flip*fb_sc*calib["FB_CAL"][0],1)
-		ffunc_sc = np.poly1d(ceff_sc)
+    # Normal resistance fit
+    bias_fit = np.array([bias[i] for i in range((len(bias))) if (bias[i]>fitrange["rnti_low"] and bias[i]<fitrange["rnti_hgh"])])
+    fb_fit   = np.array([fb[i] for i in range((len(fb))) if (bias[i]>fitrange["rnti_low"] and bias[i]<fitrange["rnti_hgh"])])
+    
+    ceff  = np.polyfit(bias_fit*calib["BIAS_CAL"][0],-1*flip*fb_fit*calib["FB_CAL"][0],1)
+    ffunc = np.poly1d(ceff)
+    
+    RR = calib["R_SH"]*(1.00/ceff[0]-1.00) 
+    if RR<10e-3 or RR>1000e-3:
+        RR = float('nan')
 
-	if DCflag == 'RN':
-		shift_h  = ffunc(0)
-	elif DCflag == 'SC':
-		shift_h  = ffunc_sc(0)
-	elif DCflag == 0:
-		shift_h  = fbcalib_[0]
-	elif DCflag == -1:
-		shift_h  = fbcalib_[-1]
-	else:
-		print("DCflag = ['RN', 'SC', 0, -1], otherwise use RN")
-		shift_h  = ffunc(0)
-		fbcalib = fbcalib_ - shift_h
-		biascalib = biascalib_
-		rntifit  = ffunc(biascalib) - shift_h
+    # SC fit initialization
+    if fitrange["sc_low"] is None:
+        fitrange["sc_low"] = min(bias)
+        fitrange["sc_hgh"] = max(bias)
 
-	if out_path and row+1 and col+1:
-				fig,ax = eps.presetting(7.4,6,lx="Ib [uA]",ly="Ites [uA]")
-				pl.suptitle('Row %02d'%row + ' Col %02d'%col)
-				pl.plot(biascalib*1e6,fbcalib*1e6, biascalib*1e6, rntifit*1e6)
-				pl.xlim(min(biascalib)*1e6,max(biascalib)*1e6)
-				
-				pl.text(0.6, 0.85, 'R = %.2f Ohms'%RR, fontsize=15, transform=ax.transAxes)
-				pl.text(0.6, 0.75, 'SC slope = %.2f'%ceff_sc[0], fontsize=15, transform=ax.transAxes)
-		
-				fn = os.path.join(out_path,'single_iv_row%02d'%row + '_col%02d_yes.png'%col)
-				eps.possetting(fig, ffn = fn, ifleg = False, ifgrid = True, ifshow = False)
-		
-	return biascalib, fbcalib, RR, ceff_sc[0]
+    # Move SC fit logic outside the 'if None' check to ensure ceff_sc is always defined
+    bias_sc  = np.array([bias[i] for i in range((len(bias))) if (bias[i]>fitrange["sc_low"] and bias[i]<fitrange["sc_hgh"])])
+    fb_sc    = np.array([fb[i] for i in range((len(fb))) if (bias[i]>fitrange["sc_low"] and bias[i]<fitrange["sc_hgh"])])
+    ceff_sc  = np.polyfit(bias_sc*calib["BIAS_CAL"][0],-1*flip*fb_sc*calib["FB_CAL"][0],1)
+    ffunc_sc = np.poly1d(ceff_sc)
+
+    # Determine vertical shift
+    if DCflag == 'RN':
+        shift_h  = ffunc(0)
+    elif DCflag == 'SC':
+        shift_h  = ffunc_sc(0)
+    elif DCflag == 0:
+        shift_h  = fbcalib_[0]
+    elif DCflag == -1:
+        shift_h  = fbcalib_[-1]
+    else:
+        print("DCflag = ['RN', 'SC', 0, -1], otherwise use RN")
+        shift_h  = ffunc(0)
+
+    # Define calibrated values for plotting and return (moved out of 'else' block)
+    fbcalib = fbcalib_ - shift_h
+    biascalib = biascalib_
+    rntifit  = ffunc(biascalib_) - shift_h
+
+    if out_path and row is not None and col is not None:
+        fig,ax = eps.presetting(7.4,6,lx="Ib [uA]",ly="Ites [uA]")
+        pl.suptitle('Row %02d'%row + ' Col %02d'%col)
+        pl.plot(biascalib*1e6,fbcalib*1e6, biascalib*1e6, rntifit*1e6)
+        pl.xlim(min(biascalib)*1e6,max(biascalib)*1e6)
+        
+        pl.text(0.6, 0.85, 'R = %.2f Ohms'%RR, fontsize=15, transform=ax.transAxes)
+        pl.text(0.6, 0.75, 'SC slope = %.2f'%ceff_sc[0], fontsize=15, transform=ax.transAxes)
+
+        fn = os.path.join(out_path,'single_iv_row%02d'%row + '_col%02d_yes.png'%col)
+        eps.possetting(fig, ffn = fn, ifleg = False, ifgrid = True, ifshow = False)
+        
+    return biascalib, fbcalib, RR, ceff_sc[0]
 
 
 #ksc : superconducting slope from the lc func above, not required.
