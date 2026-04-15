@@ -23,7 +23,7 @@ from Gtemplists import gettemplists
 class opts:
 	testbed = 'BA'
 	freq = 40 # GHz
-	date = '20260414'
+	date = '20260414' #date data was taken
 	module = 'BA40M4T4'
 	runn = '%s_%s_%s'%(date,testbed,module)
 	rnpsat = 0.02 # Ohm
@@ -81,17 +81,17 @@ def main():
 	prdata = {}
 	colors = pl.cm.jet(np.linspace(0,1,len(templist)))
 	
-	in_path  = './cryo/%s/'%(opts.date)
+	#in_path  = './cryo/%s/'%(opts.date) #FIX THIS
+	in_path = '/Users/sarahgates/tespy/current_data/'
 	print(('input folder: %s'%in_path))
-	out_path_main = './output/%s/'%(opts.date)
+	out_path_main = '/Users/sarahgates/tespy/%s/'%(opts.date)
 	print(('output folder: %s'%out_path_main))
 	
 	for temp in templist:
 		#===================================#
 		# loading data/making output dirs
 		#===================================#
-		filename = ('LC_dark_alpha_fine_sk_FPU'+str(temp)+'mK_datamode1_source'+str(temp)+'mK' + 
-			'/LC_dark_alpha_fine_sk_FPU'+str(temp)+'mK_datamode1_source'+str(temp)) #for 04/26 pinky data
+		filename = ('LC_dark_alpha_fine_sk_FPU'+str(temp)+'mK_datamode1_source'+str(temp)+'mK') #for 04/26 pinky data
 
 		#correct name for 20260414:
 		#/LC_dark_alpha_fine_sk_FPU106mK_datamode1_source106mK/LC_dark_alpha_fine_sk_FPU106mK_datamode1_source106mK.run

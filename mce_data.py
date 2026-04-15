@@ -72,7 +72,7 @@ class BitField(object):
             if left != 0:
                 data = numpy.array(data).astype('int32') * 2**left
             if right != 0:
-                data = numpy.array(data).astype('int32') / 2**right
+                data = numpy.array(data).astype('int32') // 2**right
         else:
             # For unsigned fields, bit operations should be used
             data = (data >> self.start) & ((1 << self.count)-1)
@@ -310,7 +310,7 @@ class SmallMCEFile:
             self.raw_data = True
             self.n_rows = 1
             self.n_cols = dm_data.raw_info['n_cols']
-            self.n_frames = self.n_ro * self.size_ro / self.n_cols
+            self.n_frames = self.n_ro * self.size_ro // self.n_cols  # Py3: // for int
             self.freq = 50.e6
             return
             
@@ -331,12 +331,12 @@ class SmallMCEFile:
         
         # Determine the final data count, per channel.  Any times
         # that are not represented in all channels are lost.
-        self.n_frames = (count_cc / count_rc) * self.n_ro
+        self.n_frames = (count_cc // count_rc) * self.n_ro  # Py3: // for int
 
         # Store mean sampling frequency
         nr, rl, dr = [self._rfMCEParam('cc', s) for s in \
                           ['num_rows', 'row_len', 'data_rate']]
-        self.freq = (50.e6 / nr / rl / dr) * (count_cc / count_rc)
+        self.freq = (50.e6 / nr / rl / dr) * (count_cc // count_rc)  # Py3: // for int
 
 
     def _GetPayloadInfo(self):
@@ -365,17 +365,17 @@ class SmallMCEFile:
         if self.filename != None:
             # This conditional caginess is for subclassing to MCEBinaryData.
             file_size = stat(self.filename).st_size
-            self.n_ro = file_size / self.frame_bytes
+            self.n_ro = file_size // self.frame_bytes  # Py3: // for int
             if file_size % self.frame_bytes != 0:
                 print('Warning: partial frame at end of file.')
 
     def _UpdateNFrames(self):
         # Partial GetInfo... no error checking.
         file_size = stat(self.filename).st_size
-        self.n_ro = file_size / self.frame_bytes
+        self.n_ro = file_size // self.frame_bytes  # Py3: // for int
         count_rc = self.n_rows * self.n_cols
         count_cc = self.size_ro
-        self.n_frames = (count_cc / count_rc) * self.n_ro
+        self.n_frames = (count_cc // count_rc) * self.n_ro  # Py3: // for int
 
     def _ReadHeader(self, offset=None, head_binary=None):
         """
@@ -387,7 +387,7 @@ class SmallMCEFile:
         if head_binary == None:
             if self.filename == None:
                 raise RuntimeError('Can\'t read header without data file.')
-            fin = open(self.filename)
+            fin = open(self.filename, 'rb')  # Py3: binary mode for numpy.fromfile
             if offset != None:
                 fin.seek(offset)
             head_binary = numpy.fromfile(file=fin, dtype='<i4',
@@ -428,20 +428,21 @@ class SmallMCEFile:
             # Users: override this by changing the value of mce_data.MAX_READ_SIZE
             print('Warning: maximum read of %i bytes exceeded; limiting.' % \
                 MAX_READ_SIZE)
-            count = MAX_READ_SIZE / self.frame_bytes
+            count = MAX_READ_SIZE // self.frame_bytes  # Py3: // for int
 
         # Open, seek, read.
-        f_dwords = self.frame_bytes / MCE_DWORD
-        fin = open(self.filename)
-        fin.seek(start*self.frame_bytes)
-        a = numpy.fromfile(file=fin, dtype='<i4', count=count*f_dwords)
-        n_frames = len(a) / f_dwords
+        f_dwords = self.frame_bytes // MCE_DWORD  # Py3: // for int
+        fin = open(self.filename, 'rb')  # Py3: binary mode for numpy.fromfile
+        fin.seek(int(start) * int(self.frame_bytes))
+        a = numpy.fromfile(file=fin, dtype='<i4', count=int(count)*int(f_dwords))
+        print('Read %i frames of %i requested.' % (len(a)//f_dwords, count))
+        n_frames = len(a) // f_dwords  # Py3: // for int
         if len(a) != count*f_dwords:
             print('Warning: read problem, only %i of %i requested frames were read.'% \
-                  (len(a)/f_dwords, count))
+                  (len(a)//f_dwords, count))
         # Trim and reshape
-        a = a[:n_frames*f_dwords]
-        a.shape = (n_frames, f_dwords)
+        a = a[:int(n_frames)*int(f_dwords)]
+        a.shape = (int(n_frames), int(f_dwords))
         if raw_frames:
             # Return all data (i.e. including header and checksum)
             return a
@@ -510,7 +511,7 @@ class SmallMCEFile:
         # Reshape data_in to (cc_frame, cc_row, cc_col) so we can work
         # with each RC's data one-by-one
         cc_cols = self.n_rc * self.rc_step
-        data_in.shape = (n_ro, n_chan / cc_cols, cc_cols)
+        data_in.shape = (n_ro, n_chan // cc_cols, cc_cols)  # Py3: // for int
 
         # Probably should leave the type the same, oops.
         if dtype == None:
@@ -518,7 +519,7 @@ class SmallMCEFile:
 
         # Short-hand some critical sizes and declare output data array
         f = self.n_cols*self.n_rows          # RC frame size
-        p = self.size_ro / f                 # CC/RC packing multiplier
+        p = self.size_ro // f                # Py3: // for int; CC/RC packing multiplier
         data = numpy.zeros((self.n_rows, self.n_rc, self.n_cols, n_ro * p),
                            dtype=dtype)
 
@@ -542,17 +543,17 @@ class SmallMCEFile:
         Extract 50 MHz samples from raw frame data.
         """
         # In raw data modes, the RCs always return a perfect set of contiguous data.
-        n_samp = data_in.shape[0] * data_in.shape[1] / self.n_rc / n_cols
+        n_samp = data_in.shape[0] * data_in.shape[1] // self.n_rc // n_cols  # Py3: // for int
         data = numpy.zeros((n_cols*self.n_rc, n_samp), dtype='int')
 
         # Reshape data_in to (cc_frame, cc_row, cc_col) so we can work
         # with each RC's data one-by-one
-        data_in.shape = (-1, self.size_ro/self.rc_step, self.n_rc * self.rc_step)
+        data_in.shape = (-1, self.size_ro//self.rc_step, self.n_rc * self.rc_step)  # Py3: // for int
         for rci in range(self.n_rc):
             # Get data from this rc as 1d array.
             x = data_in[:,:,self.rc_step*rci:self.rc_step*(rci+1)].reshape(-1)
             # Truncate partial data and reshape to (rc_sample, column)
-            nf = n_cols * (x.shape[0] / n_cols)
+            nf = n_cols * (x.shape[0] // n_cols)  # Py3: // for int
             x = x[0:nf].reshape(-1, n_cols)
             # Transpose to (column, rc_sample) and store
             data[n_cols*rci:n_cols*(rci+1),:] = x.transpose()
@@ -627,14 +628,14 @@ class SmallMCEFile:
         # Convert sample indices to readout frame indices
         if self.raw_data:
             # Raw data is contiguous and uninterrupted
-            cc_start = start * self.n_cols / self.size_ro
-            cc_count = ((count+start)*self.n_cols + self.size_ro-1) / \
-                self.size_ro - cc_start
+            cc_start = start * self.n_cols // self.size_ro  # Py3: // for int
+            cc_count = int(((count+start)*self.n_cols + self.size_ro-1) // \
+                self.size_ro - cc_start)  # Py3: // for int
         else:
             # For packed data, trim excess frame words
-            pack_factor = self.size_ro / (self.n_rows * self.n_cols)
-            cc_start = start / pack_factor
-            cc_count = (count + start + pack_factor-1) / pack_factor - cc_start
+            pack_factor = self.size_ro // (self.n_rows * self.n_cols)  # Py3: // for int
+            cc_start = start // pack_factor  # Py3: // for int
+            cc_count = int((count + start + pack_factor-1) // pack_factor - cc_start)  # Py3: // for int
 
         # Get detector data as (n_ro x (size_ro*n_rc)) array
         data_in = self.ReadRaw(count=cc_count, start=cc_start)
@@ -694,7 +695,7 @@ class SmallMCEFile:
             if f == 'fb_filt':
                 if unfilter == 'DC':
                     new_data /= filt.gain()
-		    #print(filt.gain())
+                    #print(filt.gain())
                 elif unfilter == True:
                     new_data = filt.apply_filter(new_data, inverse=True,
                                                  decimation=1./self.divid)
@@ -1053,4 +1054,3 @@ class MCEButterworth(MCEFilter):
         fparams = runfile.Item('HEADER', 'RB %s fltr_coeff' % rc, type='int')
         # That should be enough
         return cls.from_params(ftype, fparams)
-
