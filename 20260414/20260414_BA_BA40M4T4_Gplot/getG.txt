@@ -277,7 +277,7 @@ def main():
 
 	shutil.copy2(os.path.realpath(__file__), out_Gplot + (os.path.realpath(__file__).split("/")[-1]).replace(".py", ".txt"))
 	fnpickle = out_Gplot + Gfn + '.pkl'
-	pickle.dump((lcdata, prdata, GTdata, DetInfos), open(fnpickle, 'w'))
+	pickle.dump((lcdata, prdata, GTdata, DetInfos), open(fnpickle, 'wb'))
 	''' 
         read data: d = pickle.l/ad(/pen(fnpickle,'r')) 
                 d[0] --> lcdata 
