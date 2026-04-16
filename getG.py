@@ -23,15 +23,15 @@ from Gtemplists import gettemplists
 class opts:
 	testbed = 'BA'
 	freq = 40 # GHz
-	date = '20260414' #date data was taken
+	date = '20260414' #date data was taken, listed in gettemplists file
 	module = 'BA40M4T4'
 	runn = '%s_%s_%s'%(date,testbed,module)
-	rnpsat = 0.02 # Ohm
+	rnpsat = 0.002 # Ohm
 	iffitbeta = True 
 	fitrange = {	'rnti_low': 150.00,
 			'rnti_hgh': 500.00,
 			'sc_low': 0.00,
-			'sc_hgh': 30.00}	
+			'sc_hgh': 600.00}	
 	#cols = range(12)
 	cols = [0, 2, 3, 4]
 	rows = list(range(33))
@@ -126,6 +126,7 @@ def main():
 				fitrange = opts.fitrange
 				# get_LC(bias, fb, calib, fitrange = None, row = None, col = None, out_path = None, flip = 1, DCflag='RN')
 				ibias, ites, rnti, ksc = lc(bias, y[row,col], calib, fitrange, row, col)
+				ites = -1*ites
 				# get_PR_Ti(biascalib, fbcalib, calib, rnti, rnpsat, ksc = None, row = None, col = None, out_path = None, flip = 1)
 				rr, pp, psat = pr(ibias, ites, calib, rnti, opts.rnpsat, row=row, col=col)
 				lcdata[str(temp)+'_r'+str(row)+'c'+str(col)] = [ibias, ites]
@@ -167,8 +168,8 @@ def main():
 			pl.suptitle('Row %02d'%row + ' Col %02d'%col)
 			pl.xlabel('Ibias [uA]', fontsize=15)
 			pl.ylabel('Ites [uA]', fontsize=15)
-			pl.xlim(0, 350)
-			pl.ylim(0, 50)
+			pl.xlim(0, 5) #prev: 0, 350
+			pl.ylim(0, 100)
 			for itemp, temp in enumerate(templist):
 				#temp2 = templist2[itemp] #FPU1to2
 				pl.plot(lcdata[str(temp)+'_r'+str(row)+'c'+str(col)][0]*1.e6,
@@ -183,8 +184,9 @@ def main():
 			pl.suptitle('Row %02d'%row + ' Col %02d'%col)
 			pl.xlabel('R [mOhms]', fontsize=15)
 			pl.ylabel('P [pW]', fontsize=15)
-			pl.xlim(0, 200)
-			pl.ylim(0, 6)
+			pl.xlim(0,5)
+			#pl.xlim(0, 200)
+			pl.ylim(0, 10)
 			for itemp, temp in enumerate(templist):
 				#temp2 = templist2[itemp] #FPU1to2
 				pl.plot(prdata[str(temp)+'_r'+str(row)+'c'+str(col)][0]*1.00e3,
